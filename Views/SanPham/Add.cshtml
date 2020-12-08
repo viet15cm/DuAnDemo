@@ -1,0 +1,103 @@
+﻿@model WebBanHangAPI.Models.MVCModel.mvcSanPham
+
+@{
+    ViewBag.Title = "Add";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Add</h2>
+
+
+@using (Html.BeginForm("Add", "SanPham", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Anh)
+
+    <div class="row">
+        <div class="form-horizontal">
+            <h3>Form</h3>
+            <hr />
+            <div class="col-md-6">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.IDSP, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.IDSP, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.IDSP, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.TenSP, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.TenSP, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.TenSP, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DonGia, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.DonGia, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.DonGia, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.NgayCapNhat, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.NgayCapNhat, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.NgayCapNhat, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.IDMH, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.IDMH, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.IDMH, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Save" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Anh, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <img src="@Url.Content(Model.Anh)" style="margin: 10px; width: 200px; height: 200px;" id="imgPreview" />
+                        <input type="file" name="ImageUpload" accept="image/png" onchange="ShowImagePreview(this, document.getElementById('imgPreview'))" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    <a href='@Url.Action("Index", "SanPham")' class="btn btn-primary">Close</a>
+
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        function ShowImagePreview(imgUpLoader, previewImg) {
+            if (imgUpLoader.files && imgUpLoader.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $(previewImg).attr('src', e.target.result)
+                }
+
+                reader.readAsDataURL(imgUpLoader.files[0]);
+                debugger
+            }
+        }
+    </script>
+
+
+}

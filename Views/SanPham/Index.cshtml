@@ -1,0 +1,153 @@
+﻿@model IEnumerable<WebBanHangAPI.Models.MVCModel.mvcJoinModel.mvcSanPhamMatHang>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    <link href="~/Scripts/libraryJs/datatable-js/css.dataTables.min.css" rel="stylesheet" />
+}
+
+<h2> <i class="far fa-map"></i> Danh Mục <i class="fab fa-product-hunt"></i> Sản Phẩm</h2>
+
+<p>
+    <a href="@Url.Action("Add","SanPham")" class="btn btn-default"><i class="fas fa-plus"></i> Create New</a>
+</p>
+<div class="grid" style="width: 100%; height: 60vh">
+    <table id="tbSanPham" class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên Sản Phẩm</th>
+                <!--<th>Anh</th>-->
+                <th>Giá Nhập</th>
+                <th>Giá Bán</th>
+                <th>Ngày Cập Nhật</th>
+
+                <th>Mặt Hàng</th>
+                <th>Tùy Chọn</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+
+
+@section scripts{
+    <script src="~/Scripts/libraryJs/datatable-js/jquery.dataTables.min.js"></script>
+
+
+    <script src="~/Scripts/libraryJs/datatable-js/dataTables.scrollResize.min.js"></script>
+    <script>
+        $(function () {
+            var object = new MyObject()
+        });
+
+        class MyObject{
+            constructor() {
+
+                this.loadData();
+                this.displayShowSuccessMessage();
+            }
+
+
+
+            loadData(){
+
+
+                var model = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+                $('#tbSanPham').DataTable().destroy();
+                debugger;
+                var table = $('#tbSanPham').DataTable({
+                    data: model,
+                    columnDefs: [
+
+                        { orderable: false, targets: 4 },
+                        { orderable: false, targets: 1 }
+                    ],
+
+                    columns: [
+
+                        { data: 'IDSP' },
+                        { data: 'TenSP' },
+                        /*{
+
+                            data: 'Anh',
+                            render: function (data, type, row, meta) {
+                                if (data == null) {
+                                    return "";
+                                }
+                                debugger;
+                                return '<img class="img-responsive" src="' + data + '" alt="Product_Image"'
+                                    + 'height = "50px" width = "50px" /> ';
+                                debugger
+                            }
+                        },
+                        */
+                        {
+
+                            data: 'DonGia',
+                            render: $.fn.dataTable.render.number('.', ',', 0, '₫ ')
+                        },
+                        {
+
+                            data: 'GiaBan',
+                            render: $.fn.dataTable.render.number('.', ',', 2, '₫ ')
+                        },
+                        { data: 'NgayCapNhat'},
+                        { data: 'TenMH' },
+                        {
+
+                            data: 'IDSP',
+                            render: function (data, type, row, meta) {
+
+                                var myUrlEdit = '@Url.Action("Edit", "SanPham")/' + data;
+                                var myUrlDelete = '@Url.Action("Delete", "SanPham")/' + data;
+                                
+                                return '<a href=\"' + myUrlEdit + '\" class=\"btn btn-default\">Edit</a>' + 
+                                        '&nbsp<a href=\"'+ myUrlDelete +'\" class=\"btn btn-default\">Delete</a>';
+
+                            }
+                        },
+                        
+
+                    ],
+                    "order": [
+
+                        [0, "asc"],
+                    ],
+                    "pageLength": 5,
+                    scrollResize: true,
+                    scrollY: 1,
+                    scrollCollapse: true,
+                    paging: true,
+                    dom: 'Bfrtip',
+
+
+                });
+
+                table.columns.adjust().draw();
+            }
+
+            displayShowSuccessMessage() {
+
+                var successMessage = '@TempData["SuccessMessage"]';
+                if (successMessage != '') {
+                    alertify.success(successMessage);
+
+                }
+                var errorMessage = '@TempData["ErrorMessage"]';
+                if (errorMessage != '') {
+                    alertify.error(errorMessage);
+
+                }
+            }
+
+
+        }
+
+    </script>
+
+
+}

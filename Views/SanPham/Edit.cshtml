@@ -1,0 +1,166 @@
+﻿@model WebBanHangAPI.Models.MVCModel.mvcSanPham
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    <link href="~/Scripts/libraryJs/autocomplete-js/css-ui-autocomplete.css" rel="stylesheet" />
+}
+
+<h2><i class="fab fa-product-hunt"></i> Sản Phẩm <i class="fas fa-edit"></i> Sữa</h2>
+
+
+@using (Html.BeginForm("Edit", "SanPham", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.IDSP)
+    @Html.HiddenFor(model => model.Anh)
+
+    <div class="row">
+        <div class="form-horizontal">
+            <h3>From</h3>
+            <hr />
+            <div class="col-md-6">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.TenSP, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.TenSP, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.TenSP, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DonGia, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.DonGia, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.DonGia, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.NgayCapNhat, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.NgayCapNhat, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.NgayCapNhat, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.IDMH, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.IDMH, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.IDMH, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Save" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    @if (Model.Anh == "" || Model.Anh == null)
+                    {
+                        @Html.LabelFor(model => model.Anh, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            <img style="margin: 10px; width: 200px; height: 200px;" id="imgPreview" />
+
+
+                            <input type="file" name="ImageUpload" accept="image/png" onchange="ShowImagePreview(this, document.getElementById('imgPreview'))" />
+                        </div>
+                    }
+                    else
+                    {
+                        @Html.LabelFor(model => model.Anh, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            <img src="@Url.Content(Model.Anh)" style="margin: 10px; width: 200px; height: 200px;" id="imgPreview" />
+
+
+                            <input type="file" name="ImageUpload" accept="image/png" onchange="ShowImagePreview(this, document.getElementById('imgPreview'))" />
+
+
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<div>
+    <a href="@Url.Action("Index", "SanPham")" class="btn btn-primary">Close</a>
+
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script src="~/Scripts/libraryJs/autocomplete-js/jquery-ui-autocomplete.js"></script>
+
+
+    <script>
+
+        function ShowImagePreview(imgUpLoader, previewImg) {
+            if (imgUpLoader.files && imgUpLoader.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $(previewImg).attr('src', e.target.result)
+                }
+
+                reader.readAsDataURL(imgUpLoader.files[0]);
+                debugger
+            }
+        }
+    </script>
+
+    <script>
+        $("#IDMH").autocomplete({
+
+                source: function (request, response) {
+                    debugger
+                    $.ajax({
+                        url: "@Url.Action("getListAutoCompelete", "SanPham")",
+                        dataType: "Json",
+                        data: { key: request.term },
+                        type: 'GET',
+                        contentType: 'aplication/json'
+
+
+                    }).done(function (data) {
+
+                        var c = data.list;
+                        debugger
+                        response($.map(c, function (objet) {
+                            debugger;
+                            return {
+                                label: objet.TenMH + " - " + objet.IDMH,
+                                value: objet.IDMH,
+                            };
+                        }));
+
+                    })
+                },
+                select: function (event, ui) {
+
+                    $("#IDMH").val(ui.item.value);
+                    debugger
+                    return false;
+                },
+                messages: {
+                    noResults: '',
+                    results: function () { }
+                }
+
+            });
+
+
+
+
+
+    </script>
+
+
+}
